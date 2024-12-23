@@ -279,3 +279,10 @@ class SearchResultsView(TemplateView):
                 "data": [item["count"] for item in reversed(trends)],
             }
         )
+
+
+# adding a Views for about.html and contact.html
+class AboutView(TemplateView):
+    template_name = 'blog/about.html'
+class ContactView(TemplateView):
+    template_name = 'blog/contact.html'

@@ -19,4 +19,7 @@ urlpatterns = [
         name="author_profile",
     ),
     path("search/", views.SearchResultsView.as_view(), name="search"),
+    # paths to about and contact views
+    path("about/", views.AboutView.as_view(), name="about"),
+    path("contact/", views.ContactView.as_view(), name="contact"),
 ]

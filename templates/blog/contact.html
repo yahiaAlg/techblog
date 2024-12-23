@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us | TechBlog{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Contact Header -->
+        <div class="col-12 text-center mb-5">
+            <h1 class="display-4 mb-3">Get in Touch</h1>
+            <p class="lead text-muted">
+                Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            </p>
+        </div>
+
+        <!-- Contact Form & Info -->
+        <div class="row">
+            <!-- Contact Information -->
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h3 class="h4 mb-4">Contact Information</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="h6 text-primary">Address</h4>
+                            <p class="mb-0">
+                                123 Tech Street<br>
+                                Silicon Valley, CA 94025<br>
+                                United States
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="h6 text-primary">Email</h4>
+                            <p class="mb-0">
+                                <a href="mailto:contact@techblog.com" class="text-decoration-none">
+                                    contact@techblog.com
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="h6 text-primary">Phone</h4>
+                            <p class="mb-0">
+                                <a href="tel:+1234567890" class="text-decoration-none">
+                                    +1 (234) 567-890
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="social-links">
+                            <h4 class="h6 text-primary mb-3">Follow Us</h4>
+                            <a href="#" class="text-decoration-none me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                            <a href="#" class="text-decoration-none me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                            <a href="#" class="text-decoration-none me-3"><i class="fab fa-linkedin fa-lg"></i></a>
+                            <a href="#" class="text-decoration-none me-3"><i class="fab fa-github fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h4 mb-4">Send us a Message</h3>
+                        
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="subject" name="subject" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter">
+                                    <label class="form-check-label" for="newsletter">
+                                        Subscribe to our newsletter
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="col-12 mt-5">
+            <h3 class="text-center mb-4">Frequently Asked Questions</h3>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq1">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#faq1Collapse">
+                            How can I become an author?
+                        </button>
+                    </h2>
+                    <div id="faq1Collapse" class="accordion-collapse collapse show" 
+                         data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            To become an author, you need to register an account and submit a writing sample. 
+                            Our editorial team will review your application and get back to you within 48 hours.
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more FAQ items as needed -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %}

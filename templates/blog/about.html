@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us | TechBlog{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- About Header -->
+        <div class="col-12 text-center mb-5">
+            <h1 class="display-4 mb-3">About TechBlog</h1>
+            <p class="lead text-muted">
+                A community-driven platform for tech enthusiasts, developers, and innovators.
+            </p>
+        </div>
+
+        <!-- Mission Statement -->
+        <div class="col-md-8 offset-md-2 mb-5">
+            <div class="card bg-light border-0">
+                <div class="card-body text-center p-5">
+                    <h2 class="h3 mb-4">Our Mission</h2>
+                    <p class="mb-0">
+                        To create an inclusive space where technology professionals and enthusiasts can share knowledge,
+                        experiences, and insights, fostering a collaborative environment for learning and growth in the
+                        tech industry.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="col-12 mb-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-pen-fancy fa-2x mb-3 text-primary"></i>
+                            <h3 class="h5">Quality Content</h3>
+                            <p class="card-text">
+                                Carefully curated articles and tutorials from experienced professionals in the field.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-users fa-2x mb-3 text-primary"></i>
+                            <h3 class="h5">Community Driven</h3>
+                            <p class="card-text">
+                                Active community of developers sharing knowledge and supporting each other.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-laptop-code fa-2x mb-3 text-primary"></i>
+                            <h3 class="h5">Latest Tech</h3>
+                            <p class="card-text">
+                                Stay updated with the latest trends and technologies in software development.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="col-12 mb-5">
+            <h2 class="text-center mb-4">Our Team</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <img src="{% static 'img/team/founder.jpg' %}" alt="Founder" 
+                                 class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            <h3 class="h5">John Doe</h3>
+                            <p class="text-muted">Founder & Lead Developer</p>
+                            <div class="social-links">
+                                <a href="#" class="text-decoration-none mx-2"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="text-decoration-none mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="text-decoration-none mx-2"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more team members as needed -->
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="col-12 mb-5">
+            <div class="row g-4 text-center">
+                <div class="col-md-3">
+                    <h2 class="display-4 fw-bold text-primary">{{ stats.articles }}</h2>
+                    <p class="text-muted">Articles Published</p>
+                </div>
+                <div class="col-md-3">
+                    <h2 class="display-4 fw-bold text-primary">{{ stats.authors }}</h2>
+                    <p class="text-muted">Expert Authors</p>
+                </div>
+                <div class="col-md-3">
+                    <h2 class="display-4 fw-bold text-primary">{{ stats.comments }}</h2>
+                    <p class="text-muted">Community Comments</p>
+                </div>
+                <div class="col-md-3">
+                    <h2 class="display-4 fw-bold text-primary">{{ stats.users }}</h2>
+                    <p class="text-muted">Registered Users</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join Us CTA -->
+        <div class="col-md-8 offset-md-2 text-center">
+            <div class="bg-primary text-white p-5 rounded">
+                <h2 class="mb-3">Join Our Community</h2>
+                <p class="mb-4">
+                    Be part of our growing community of tech enthusiasts and professionals.
+                    Share your knowledge and learn from others.
+                </p>
+                <a href="{% url 'accounts:signup' %}" class="btn btn-light btn-lg">
+                    Sign Up Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

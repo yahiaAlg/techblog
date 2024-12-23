@@ -1,137 +1,62 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from .models import Profile
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
-import re
 
-User = get_user_model()
-
-
-class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(
-        label=_("Email"), widget=forms.EmailInput(attrs={"class": "form-control"})
-    )
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(max_length=254, help_text=_('Required. Enter a valid email address.'))
     terms_accepted = forms.BooleanField(
-        label=_("I accept the Terms of Service"), required=True
+        required=True,
+        label=_('I accept the Terms of Service and Privacy Policy')
     )
 
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ("username", "email", "password1", "password2")
-        widgets = {
-            "username": forms.TextInput(attrs={"class": "form-control"}),
-        }
-
-    def clean_password1(self):
-        password = self.cleaned_data.get("password1")
-        if len(password) < 8:
-            raise ValidationError(_("Password must be at least 8 characters long."))
-        if not re.search(r"[A-Z]", password):
-            raise ValidationError(
-                _("Password must contain at least one uppercase letter.")
-            )
-        if not re.search(r"[a-z]", password):
-            raise ValidationError(
-                _("Password must contain at least one lowercase letter.")
-            )
-        if not re.search(r"[0-9]", password):
-            raise ValidationError(_("Password must contain at least one number."))
-        return password
-
-
-class CustomAuthenticationForm(AuthenticationForm):
-    username = forms.EmailField(
-        label=_("Email"),
-        widget=forms.EmailInput(
-            attrs={"class": "form-control", "placeholder": _("Enter your email")}
-        ),
-    )
-    password = forms.CharField(
-        label=_("Password"),
-        widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": _("Enter your password")}
-        ),
-    )
-    remember_me = forms.BooleanField(
-        label=_("Remember me"), required=False, initial=True
-    )
-
-
-class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = (
-            "first_name",
-            "last_name",
-            "username",
-            "email",
-            "phone_number",
-            "bio",
-            "avatar",
-            "birth_date",
-        )
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError(_("This email address is already in use."))
+        return email
+
+class CustomAuthenticationForm(AuthenticationForm):
+    remember_me = forms.BooleanField(required=False, initial=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password'].widget.attrs.update({'class': 'form-control'})
+
+class ProfileUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=False)
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio', 'location', 'birth_date', 'website', 
+                 'github', 'twitter', 'linkedin', 'newsletter_subscription']
         widgets = {
-            "birth_date": forms.DateInput(attrs={"type": "date"}),
-            "bio": forms.Textarea(attrs={"rows": 4}),
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'bio': forms.Textarea(attrs={'rows': 4}),
         }
 
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
-            raise ValidationError(_("This email is already in use."))
-        return email
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.user:
+            self.fields['first_name'].initial = self.instance.user.first_name
+            self.fields['last_name'].initial = self.instance.user.last_name
+            self.fields['email'].initial = self.instance.user.email
 
-
-class PasswordResetRequestForm(forms.Form):
-    email = forms.EmailField(
-        label=_("Email"),
-        widget=forms.EmailInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": _("Enter your email address"),
-            }
-        ),
-    )
-
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        if not User.objects.filter(email=email).exists():
-            raise ValidationError(_("No user found with this email address."))
-        return email
-
-
-class PasswordResetConfirmForm(forms.Form):
-    new_password1 = forms.CharField(
-        label=_("New password"),
-        widget=forms.PasswordInput(attrs={"class": "form-control"}),
-    )
-    new_password2 = forms.CharField(
-        label=_("Confirm new password"),
-        widget=forms.PasswordInput(attrs={"class": "form-control"}),
-    )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get("new_password1")
-        password2 = cleaned_data.get("new_password2")
-
-        if password1 and password2:
-            if password1 != password2:
-                raise ValidationError(_("The two password fields didn't match."))
-        return cleaned_data
-
-
-class EmailVerificationRequestForm(forms.Form):
-    email = forms.EmailField(
-        label=_("Email"), widget=forms.EmailInput(attrs={"class": "form-control"})
-    )
-
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        user = User.objects.filter(email=email).first()
-        if not user:
-            raise ValidationError(_("No user found with this email address."))
-        if user.email_verified:
-            raise ValidationError(_("This email is already verified."))
-        return email
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        if commit:
+            user = profile.user
+            user.first_name = self.cleaned_data['first_name']
+            user.last_name = self.cleaned_data['last_name']
+            user.email = self.cleaned_data['email']
+            user.save()
+            profile.save()
+        return profile

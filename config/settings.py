@@ -117,7 +117,44 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = "accounts.CustomUser"
+# User Authentication Settings
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Authentication Settings
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'blog:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'
+
+# Session Settings
+SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
+SESSION_COOKIE_SECURE = True  # Use only with HTTPS
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Email verification validity period (in days)
+EMAIL_VERIFICATION_TIMEOUT_DAYS = 7
+
+# Password reset validity period (in days)
+PASSWORD_RESET_TIMEOUT_DAYS = 1
+
+# Profile image settings
+PROFILE_IMAGE_MAX_SIZE = 5 * 1024 * 1024  # 5MB
+PROFILE_IMAGE_ALLOWED_TYPES = ['image/jpeg', 'image/png']
 
 
 STORAGES = {
@@ -144,33 +181,33 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Rest Framework Settings
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "apps.api.authentication.APIKeyAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-    "DEFAULT_THROTTLE_CLASSES": [
-        "apps.api.throttling.APIKeyThrottle",
-    ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.AcceptHeaderVersioning",
-    "DEFAULT_VERSION": "v1",
-    "ALLOWED_VERSIONS": ["v1"],
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-        "rest_framework.parsers.FormParser",
-        "rest_framework.parsers.MultiPartParser",
-    ],
-}
+# REST_FRAMEWORK = {
+#     "DEFAULT_AUTHENTICATION_CLASSES": [
+#         "rest_framework.authentication.SessionAuthenti    cation",
+#         "apps.api.authentication.APIKeyAuthentication",
+#     ],
+#     "DEFAULT_PERMISSION_CLASSES": [
+#         "rest_framework.permissions.IsAuthenticated",
+#     ],
+#     "DEFAULT_THROTTLE_CLASSES": [
+#         "apps.api.throttling.APIKeyThrottle",
+#     ],
+#     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+#     "PAGE_SIZE": 10,
+#     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+#     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.AcceptHeaderVersioning",
+#     "DEFAULT_VERSION": "v1",
+#     "ALLOWED_VERSIONS": ["v1"],
+#     "DEFAULT_RENDERER_CLASSES": [
+#         "rest_framework.renderers.JSONRenderer",
+#         "rest_framework.renderers.BrowsableAPIRenderer",
+#     ],
+#     "DEFAULT_PARSER_CLASSES": [
+#         "rest_framework.parsers.JSONParser",
+#         "rest_framework.parsers.FormParser",
+#         "rest_framework.parsers.MultiPartParser",
+#     ],
+# }
 
 # DRF Spectacular Settings
 SPECTACULAR_SETTINGS = {

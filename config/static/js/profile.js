@@ -11,67 +11,21 @@ document
     }
   });
 
-// Save preferences
-document
-  .getElementById("preferencesForm")
-  .addEventListener("change", function (e) {
-    const preference = e.target.id;
-    const value = e.target.checked;
-
-    fetch("/api/preferences/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
-          .value,
-      },
-      body: JSON.stringify({
-        preference: preference,
-        value: value,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          showToast("Preferences saved successfully", "success");
-        } else {
-          showToast("Error saving preferences", "error");
+// Form validation
+(function () {
+  "use strict";
+  const forms = document.querySelectorAll(".needs-validation");
+  Array.from(forms).forEach((form) => {
+    form.addEventListener(
+      "submit",
+      (event) => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
         }
-      });
+        form.classList.add("was-validated");
+      },
+      false
+    );
   });
-
-// Copy API key
-document.querySelector(".fa-copy").addEventListener("click", function () {
-  const apiKey = this.closest(".api-key").textContent.trim();
-  navigator.clipboard.writeText(apiKey).then(() => {
-    showToast("API key copied to clipboard", "success");
-  });
-});
-
-// Generate new API key
-document
-  .querySelector(".btn-outline-primary")
-  .addEventListener("click", function () {
-    if (
-      confirm(
-        "Are you sure you want to generate a new API key? The old one will be invalidated."
-      )
-    ) {
-      fetch("/api/generate-key/", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
-            .value,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            document.querySelector(".api-key").textContent = data.key;
-            showToast("New API key generated successfully", "success");
-          } else {
-            showToast("Error generating API key", "error");
-          }
-        });
-    }
-  });
+})();

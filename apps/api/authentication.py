@@ -1,27 +1,22 @@
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
-from django.utils.translation import gettext_lazy as _
-from apps.accounts.models import CustomUser
-
+from django.utils import timezone
+from .models import APIKey
 
 class APIKeyAuthentication(BaseAuthentication):
-    """
-    Custom authentication class that authenticates users based on an API key.
-    """
-
     def authenticate(self, request):
-        api_key = request.headers.get("X-API-Key")
-
+        api_key = request.META.get('HTTP_X_API_KEY') or request.query_params.get('api_key')
+        
         if not api_key:
-            return None  # No authentication attempted
+            return None
 
         try:
-            user = CustomUser.objects.get(
-                loginhistory__token=api_key, email_verified=True
-            )
-            if not api_key:
-                raise CustomUser.objects()
-        except (CustomUser.DoesNotExist, AttributeError):
-            raise AuthenticationFailed(_("Invalid API key or no matching user found."))
-
-        return (user, None)
+            key = APIKey.objects.get(key=api_key, is_active=True)
+            
+            # Update last used timestamp
+            key.last_used_at = timezone.now()
+            key.save()
+            
+            return (key.user, key)
+        except APIKey.DoesNotExist:
+            raise AuthenticationFailed('Invalid API key')
