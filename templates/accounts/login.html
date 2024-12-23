@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login | TechBlog{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="login-container">
+        <div class="login-header">
+            <img src="{% static 'img/logo.png' %}" alt="TechBlog Logo">
+            <h2>Welcome Back</h2>
+            <p class="text-muted">Sign in to continue to TechBlog</p>
+        </div>
+
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Invalid email or password. Please try again.
+        </div>
+        {% endif %}
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-floating">
+                {{ form.username }}
+                <label for="{{ form.username.id_for_label }}">Email address</label>
+            </div>
+
+            <div class="form-floating">
+                {{ form.password }}
+                <label for="{{ form.password.id_for_label }}">Password</label>
+            </div>
+
+            <div class="remember-forgot">
+                <div class="form-check">
+                    {{ form.remember_me }}
+                    <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
+                        Remember me
+                    </label>
+                </div>
+                <a href="{% url 'accounts:password_reset_request' %}" class="text-decoration-none">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-sign-in-alt me-2"></i> Sign In
+            </button>
+        </form>
+
+        <div class="social-login">
+            <div class="social-divider">
+                <span>or continue with</span>
+            </div>
+            <div class="social-buttons">
+                <a href="{% url 'social:begin' 'github' %}" class="social-btn" title="Login with GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="{% url 'social:begin' 'google-oauth2' %}" class="social-btn" title="Login with Google">
+                    <i class="fab fa-google"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center">
+            Don't have an account? 
+            <a href="{% url 'accounts:signup' %}" class="text-decoration-none">Sign up</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/login.js' %}">
+</script>
+{% endblock %}

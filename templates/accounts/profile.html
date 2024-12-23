@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ user.get_full_name }} - Profile | TechBlog{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center">
+                <img src="{{ user.avatar_url }}" alt="{{ user.get_full_name }}" class="profile-avatar">
+            </div>
+            <div class="col-md-9">
+                <h2>{{ user.get_full_name }}</h2>
+                <p class="text-muted">{{ user.bio|default:"No bio available" }}</p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.articles.count }}</div>
+                        <div class="stat-label">Articles</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.comments.count }}</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.bookmarks.count }}</div>
+                        <div class="stat-label">Bookmarks</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Navigation -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#profile" role="tab">
+                <i class="fas fa-user me-2"></i>Profile
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#activity" role="tab">
+                <i class="fas fa-chart-line me-2"></i>Activity
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#preferences" role="tab">
+                <i class="fas fa-cog me-2"></i>Preferences
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#security" role="tab">
+                <i class="fas fa-shield-alt me-2"></i>Security
+            </a>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Profile Tab -->
+        <div class="tab-pane fade show active" id="profile" role="tabpanel">
+            <div class="form-card">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Bio</label>
+                        {{ form.bio }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Avatar</label>
+                        {{ form.avatar }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Activity Tab -->
+        <div class="tab-pane fade" id="activity" role="tabpanel">
+            <div class="activity-timeline">
+                {% for activity in recent_activities %}
+                <div class="timeline-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ activity.action }}</strong>
+                        <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                    </div>
+                    <p>{{ activity.description }}</p>
+                </div>
+                {% empty %}
+                <p class="text-muted">No recent activity.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Preferences Tab -->
+        <div class="tab-pane fade" id="preferences" role="tabpanel">
+            <div class="preferences-card">
+                <h5>Email Notifications</h5>
+                <form id="preferencesForm">
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="emailNewsletter">
+                        <label class="form-check-label" for="emailNewsletter">
+                            Subscribe to newsletter
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="emailComments">
+                        <label class="form-check-label" for="emailComments">
+                            Notify me of comments on my articles
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="emailReplies">
+                        <label class="form-check-label" for="emailReplies">
+                            Notify me of replies to my comments
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div class="tab-pane fade" id="security" role="tabpanel">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-card">
+                        <h5>Change Password</h5>
+                        <form id="passwordForm">
+                            <div class="mb-3">
+                                <label class="form-label">Current Password</label>
+                                <input type="password" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                Change Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="api-key-card">
+                        <h5>API Keys</h5>
+                        <div class="api-key mb-3">
+                            xxxxxxxxxxxxxxxxxxxxxxxxxx
+                            <button class="btn btn-sm btn-outline-secondary ms-2">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>Generate New Key
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/profile.js' %}">
+</script>
+{% endblock %}  

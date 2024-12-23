@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load blog_tags %}
+
+{% block title %}{{ article.title }} | TechBlog{% endblock %}
+
+{% block meta_description %}{{ article.excerpt }}{% endblock %}
+{% block meta_keywords %}{{ article.tags.names|join:", " }}{% endblock %}
+{% block meta_author %}{{ article.author.get_full_name }}{% endblock %}
+
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_description %}{{ article.excerpt }}{% endblock %}
+{% block og_image %}{{ article.featured_image.url }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<!-- Reading Progress Bar -->
+<div class="progress-container">
+    <div class="progress-bar" id="readingProgress"></div>
+</div>
+
+<!-- Article Hero -->
+<header class="article-hero" style="background-image: url('{{ article.featured_image.url }}')">
+    <div class="hero-overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="d-flex gap-2 mb-3">
+                        {% for tag in article.tags.all %}
+                        <a href="{% url 'tag_detail' tag.slug %}" class="badge bg-primary text-decoration-none">
+                            #{{ tag.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    <h1 class="display-4">{{ article.title }}</h1>
+                    <div class="d-flex align-items-center gap-3 mt-3">
+                        <img src="{{ article.author.avatar_url }}" class="rounded-circle" width="50" height="50" 
+                             alt="{{ article.author.get_full_name }}">
+                        <div>
+                            <div>{{ article.author.get_full_name }}</div>
+                            <div class="text-white-50">
+                                {{ article.created_at|date }} • {{ article.reading_time }} min read
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Left Sidebar - Share Buttons -->
+        <div class="col-lg-1">
+            <div class="share-buttons">
+                <button class="share-button btn btn-primary" onclick="shareArticle('twitter')">
+                    <i class="fab fa-twitter"></i>
+                </button>
+                <button class="share-button btn btn-primary" onclick="shareArticle('facebook')">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button class="share-button btn btn-primary" onclick="shareArticle('linkedin')">
+                    <i class="fab fa-linkedin-in"></i>
+                </button>
+                <button class="share-button btn btn-primary" onclick="copyLink()">
+                    <i class="fas fa-link"></i>
+                </button>
+                <button class="share-button btn btn-primary" id="bookmarkButton">
+                    <i class="far fa-bookmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <article class="article-content">
+                {{ article.content|safe }}
+            </article>
+
+            <!-- Author Card -->
+            <div class="author-card">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <img src="{{ article.author.avatar_url }}" class="author-avatar" 
+                             alt="{{ article.author.get_full_name }}">
+                    </div>
+                    <div class="col-md-9">
+                        <h4>{{ article.author.get_full_name }}</h4>
+                        <p>{{ article.author.bio }}</p>
+                        <div class="social-links">
+                            {% if article.author.twitter %}
+                            <a href="{{ article.author.twitter }}" class="me-2">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            {% endif %}
+                            {% if article.author.github %}
+                            <a href="{{ article.author.github }}" class="me-2">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            {% endif %}
+                            {% if article.author.website %}
+                            <a href="{{ article.author.website }}">
+                                <i class="fas fa-globe"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <section class="comments-section mt-5">
+                <h3>Comments ({{ article.comments.count }})</h3>
+                
+                {% if user.is_authenticated %}
+                <form id="commentForm" class="mt-4">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea class="form-control" rows="4" placeholder="Add a comment..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                </form>
+                {% else %}
+                <div class="alert alert-info">
+                    Please <a href="{% url 'login' %}">login</a> to post comments.
+                </div>
+                {% endif %}
+
+                <div id="commentsContainer" class="mt-4">
+                    {% for comment in article.comments.all %}
+                    <div class="comment">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex gap-2">
+                                <img src="{{ comment.user.avatar_url }}" class="rounded-circle" width="40" height="40"
+                                     alt="{{ comment.user.username }}">
+                                <div>
+                                    <div>{{ comment.user.get_full_name }}</div>
+                                    <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-link" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button class="dropdown-item" onclick="replyToComment({{ comment.id }})">
+                                            Reply
+                                        </button>
+                                    </li>
+                                    {% if user == comment.user %}
+                                    <li>
+                                        <button class="dropdown-item" onclick="editComment({{ comment.id }})">
+                                            Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-danger" onclick="deleteComment({{ comment.id }})">
+                                            Delete
+                                        </button>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-2">{{ comment.content }}</div>
+                        {% if comment.replies.exists %}
+                        <div class="comment-replies mt-3">
+                            {% for reply in comment.replies.all %}
+                            <div class="comment">
+                                <!-- Similar structure as parent comment -->
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Sidebar - Table of Contents -->
+        <div class="col-lg-3">
+            <div class="toc-container card">
+                <div class="card-body">
+                    <h5 class="card-title">Table of Contents</h5>
+                    <nav id="tableOfContents">
+                        <ul class="toc-list">
+                            <!-- Dynamically generated by JavaScript -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Articles -->
+    <section class="related-articles mt-5">
+        <h3>Related Articles</h3>
+        <div class="row g-4 mt-2">
+            {% for article in related_articles %}
+            <div class="col-md-4">
+                <div class="card related-article-card">
+                    <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}"
+                         loading="lazy">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.excerpt|truncatewords:20 }}</p>
+                        <a href="{% url 'article_detail' article.slug %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+<script src="{% static 'js/detail.js' %}">
+</script>
+{% endblock %}  

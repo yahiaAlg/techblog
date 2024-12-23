@@ -1,0 +1,92 @@
+:root {
+  --dracula-background: #282a36;
+  --dracula-current-line: #44475a;
+  --dracula-foreground: #f8f8f2;
+  --dracula-comment: #6272a4;
+  --dracula-cyan: #8be9fd;
+  --dracula-green: #50fa7b;
+  --dracula-orange: #ffb86c;
+  --dracula-pink: #ff79c6;
+  --dracula-purple: #bd93f4;
+  --dracula-red: #ff5555;
+  --dracula-yellow: #f1fa8c;
+}
+
+body {
+  background-color: var(--dracula-background);
+  color: var(--dracula-foreground);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  background-color: var(--dracula-current-line);
+  backdrop-filter: blur(10px);
+}
+
+.card {
+  background: rgba(68, 71, 90, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(189, 147, 244, 0.1);
+  border-radius: 10px;
+}
+
+.btn-primary {
+  background-color: var(--dracula-purple);
+  border-color: var(--dracula-purple);
+}
+
+.btn-secondary {
+  background-color: var(--dracula-pink);
+  border-color: var(--dracula-pink);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(40, 42, 54, 0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--dracula-comment);
+  border-top-color: var(--dracula-purple);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.toast {
+  background: var(--dracula-current-line);
+  color: var(--dracula-foreground);
+}
+
+/* Footer */
+.footer {
+  background-color: var(--dracula-current-line);
+  margin-top: auto;
+  padding: 2rem 0;
+}

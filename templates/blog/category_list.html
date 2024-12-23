@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load blog_tags %}
+
+{% block title %}Categories | TechBlog{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/category.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Statistics Overview -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_categories }}</div>
+                <div class="stat-label">Categories</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_articles }}</div>
+                <div class="stat-label">Articles</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_authors }}</div>
+                <div class="stat-label">Authors</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_views }}</div>
+                <div class="stat-label">Total Views</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Sort Options -->
+    <div class="filters-panel">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h5 class="mb-3">Filters</h5>
+                <div class="d-flex flex-wrap" id="activeFilters">
+                    <!-- Active filters will be added here dynamically -->
+                </div>
+                <div class="mt-3">
+                    <select class="form-select d-inline-block w-auto me-2" id="filterType">
+                        <option value="">Filter by type...</option>
+                        <option value="programming">Programming</option>
+                        <option value="development">Development</option>
+                        <option value="design">Design</option>
+                    </select>
+                    <select class="form-select d-inline-block w-auto me-2" id="filterLevel">
+                        <option value="">Filter by level...</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <div class="dropdown sort-dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Sort by: <span id="currentSort">Latest</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="sortCategories('latest')">Latest</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="sortCategories('popular')">Most Popular</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="sortCategories('articles')">Most Articles</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="sortCategories('alphabetical')">Alphabetical</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Grid -->
+    <div class="row g-4" id="categoryGrid">
+        {% for category in categories %}
+        <div class="col-md-6 col-lg-4" data-category="{{ category.type }}" data-level="{{ category.level }}">
+            <div class="category-card">
+                <div class="category-header">
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}" loading="lazy">
+                    <div class="category-overlay">
+                        <h3 class="text-white text-center mb-0">{{ category.name }}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">{{ category.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-primary me-2">{{ category.articles.count }} Articles</span>
+                            <span class="badge bg-secondary">{{ category.level }}</span>
+                        </div>
+                        <a href="{% url 'category_detail' category.slug %}" class="btn btn-primary btn-sm">
+                            Explore
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Featured Articles Preview -->
+                <div class="card-footer bg-transparent">
+                    <small class="text-muted">Featured Articles:</small>
+                    <ul class="list-unstyled mt-2 mb-0">
+                        {% for article in category.featured_articles|slice:":3" %}
+                        <li class="mb-1">
+                            <a href="{% url 'article_detail' article.slug %}" class="text-decoration-none">
+                                <i class="fas fa-article-circle me-1"></i>
+                                {{ article.title|truncatechars:40 }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="alert alert-info">
+                No categories found matching your filters.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Load More Button -->
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" id="loadMoreBtn" {% if not has_more %}style="display: none;"{% endif %}>
+            Load More Categories
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/category.js' %}">
+</script>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load blog_tags %}
+
+{% block title %}{{ author.get_full_name }} - Author Profile | TechBlog{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/author-profile.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<!-- Author Header -->
+<div class="author-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center">
+                <img src="{{ author.avatar_url }}" alt="{{ author.get_full_name }}" class="author-avatar">
+            </div>
+            <div class="col-md-9">
+                <h1 class="mb-3">{{ author.get_full_name }}</h1>
+                <p class="lead mb-3">{{ author.bio }}</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    {% if author.location %}
+                    <div><i class="fas fa-map-marker-alt me-2"></i>{{ author.location }}</div>
+                    {% endif %}
+                    {% if author.website %}
+                    <div><i class="fas fa-globe me-2"></i><a href="{{ author.website }}" target="_blank">Website</a></div>
+                    {% endif %}
+                    {% if author.joined_date %}
+                    <div><i class="fas fa-calendar me-2"></i>Joined {{ author.joined_date|date }}</div>
+                    {% endif %}
+                </div>
+                <div class="social-links">
+                    {% if author.github %}
+                    <a href="{{ author.github }}" class="social-link" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    {% endif %}
+                    {% if author.twitter %}
+                    <a href="{{ author.twitter }}" class="social-link" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    {% endif %}
+                    {% if author.linkedin %}
+                    <a href="{{ author.linkedin }}" class="social-link" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card text-center">
+                <div class="stat-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="stat-value">{{ author_stats.total_articles }}</div>
+                <div class="stat-label">Articles</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card text-center">
+                <div class="stat-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-value">{{ author_stats.total_views }}</div>
+                <div class="stat-label">Total Views</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card text-center">
+                <div class="stat-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="stat-value">{{ author_stats.total_comments }}</div>
+                <div class="stat-label">Comments</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card text-center">
+                <div class="stat-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-value">{{ author_stats.total_likes }}</div>
+                <div class="stat-label">Likes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Activity Charts -->
+            <div class="chart-container mb-4">
+                <h3 class="mb-4">Publishing Activity</h3>
+                <canvas id="activityChart"></canvas>
+            </div>
+
+            <!-- Latest Articles -->
+            <h3 class="mb-4">Latest Articles</h3>
+            <div class="row g-4">
+                {% for article in latest_articles %}
+                <div class="col-md-6">
+                    <article class="article-card">
+                        <img src="{{ article.featured_image.url }}" class="article-image w-100" alt="{{ article.title }}" loading="lazy">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <a href="{% url 'category_detail' article.category.slug %}" class="badge bg-primary text-decoration-none">
+                                    {{ article.category.name }}
+                                </a>
+                                <small class="text-muted">{{ article.created_at|date }}</small>
+                            </div>
+                            <h5 class="card-title">
+                                <a href="{% url 'article_detail' article.slug %}" class="text-decoration-none">
+                                    {{ article.title }}
+                                </a>
+                            </h5>
+                            <p class="card-text">{{ article.excerpt|truncatewords:20 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-3">
+                                    <span><i class="far fa-eye me-1"></i>{{ article.view_count }}</span>
+                                    <span><i class="far fa-comment me-1"></i>{{ article.comment_count }}</span>
+                                </div>
+                                <a href="{% url 'article_detail' article.slug %}" class="btn btn-primary btn-sm">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-4">
+                <button class="btn btn-primary" id="loadMoreBtn" {% if not has_more %}style="display: none;"{% endif %}>
+                    Load More Articles
+                </button>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Recent Activity -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Recent Activity</h4>
+                    <div class="timeline">
+                        {% for activity in recent_activities %}
+                        <div class="timeline-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{ activity.action }}</strong>
+                                <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                            </div>
+                            <p class="mb-0">{{ activity.description }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            {% if user.is_authenticated %}
+            <div class="contact-form">
+                <h4 class="mb-4">Contact {{ author.get_full_name }}</h4>
+                <form id="contactForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                Please <a href="{% url 'login' %}">login</a> to contact the author.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Activity Chart
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    const activityData = {{ author_stats.monthly_activity|safe }};
+</script>
+<script src="{% static 'js/author-profile.js' %}">
+</script>
+
+{% endblock %}

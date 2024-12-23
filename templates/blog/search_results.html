@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load blog_tags %}
+
+{% block title %}Search Results for "{{ query }}" | TechBlog{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<!-- Search Header -->
+<div class="search-header">
+    <div class="container">
+        <form id="searchForm" class="mb-4">
+            <div class="input-group">
+                <input type="text" class="form-control form-control-lg" 
+                       name="q" value="{{ query }}" 
+                       placeholder="Search articles, tutorials, and more...">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+        <div class="search-stats">
+            {{ total_results }} results found in {{ search_time }}ms
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3">
+            <div class="filters-panel sticky-top" style="top: 90px;">
+                <h5 class="mb-4">Filters</h5>
+
+                <!-- Categories -->
+                <div class="filter-section">
+                    <h6>Categories</h6>
+                    {% for category in categories %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" 
+                               name="category" value="{{ category.slug }}"
+                               {% if category.slug in selected_categories %}checked{% endif %}
+                               onchange="applyFilters()">
+                        <label class="form-check-label">
+                            {{ category.name }}
+                            <span class="badge bg-secondary">{{ category.count }}</span>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Date Range -->
+                <div class="filter-section">
+                    <h6>Date Range</h6>
+                    <input type="text" class="form-control" id="dateRange"
+                           value="{{ date_range }}" placeholder="Select date range">
+                </div>
+
+                <!-- Author -->
+                <div class="filter-section">
+                    <h6>Authors</h6>
+                    <select class="form-select" multiple onchange="applyFilters()">
+                        {% for author in authors %}
+                        <option value="{{ author.username }}"
+                                {% if author.username in selected_authors %}selected{% endif %}>
+                            {{ author.get_full_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Tags -->
+                <div class="filter-section">
+                    <h6>Tags</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for tag in popular_tags %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" 
+                                   name="tag" value="{{ tag.slug }}"
+                                   {% if tag.slug in selected_tags %}checked{% endif %}
+                                   onchange="applyFilters()">
+                            <label class="form-check-label">
+                                #{{ tag.name }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Reset Filters -->
+                <button class="btn btn-outline-danger w-100" onclick="resetFilters()">
+                    Reset Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="col-lg-9">
+            <!-- View Controls -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <!-- Sort Options -->
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" 
+                            data-bs-toggle="dropdown">
+                        Sort by: <span id="currentSort">{{ current_sort }}</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="setSort('relevance')">Relevance</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setSort('date')">Date</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setSort('views')">Views</a></li>
+                    </ul>
+                </div>
+
+                <!-- View Toggle -->
+                <div class="btn-group view-toggle">
+                    <button class="btn btn-outline-primary active" data-view="grid">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="btn btn-outline-primary" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Filters -->
+            <div class="active-filters" id="activeFilters">
+                {% for filter in active_filters %}
+                <div class="filter-badge">
+                    {{ filter.label }}: {{ filter.value }}
+                    <span class="remove-filter" onclick="removeFilter('{{ filter.type }}', '{{ filter.value }}')">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Results Grid -->
+            <div class="row g-4" id="searchResults">
+                {% for result in results %}
+                <div class="col-12 {% if view_mode == 'grid' %}col-md-6{% endif %}">
+                    <article class="result-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <a href="{% url 'category_detail' result.category.slug %}" 
+                                       class="badge bg-primary text-decoration-none mb-2">
+                                        {{ result.category.name }}
+                                    </a>
+                                    <h5 class="card-title">
+                                        <a href="{% url 'article_detail' result.slug %}" 
+                                           class="text-decoration-none">
+                                            {{ result.title }}
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div class="text-muted small">
+                                    {{ result.created_at|date }}
+                                </div>
+                            </div>
+                            <p class="card-text">{{ result.excerpt }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ result.author.avatar_url }}" 
+                                         class="rounded-circle" width="30" height="30"
+                                         alt="{{ result.author.get_full_name }}">
+                                    <span>{{ result.author.get_full_name }}</span>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <span><i class="far fa-eye"></i> {{ result.view_count }}</span>
+                                    <span><i class="far fa-comment"></i> {{ result.comment_count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        No results found for your search criteria.
+                        Try adjusting your filters or search terms.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-4">
+                <button class="btn btn-primary" id="loadMoreBtn" 
+                        {% if not has_more %}style="display: none;"{% endif %}>
+                    Load More Results
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Analytics -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="analytics-card">
+                <h5>Related Searches</h5>
+                <div class="list-group list-group-flush">
+                    {% for related in related_searches %}
+                    <a href="?q={{ related.term }}" class="related-search-item">
+                        <i class="fas fa-search"></i>
+                        <span>{{ related.term }}</span>
+                        <span class="badge bg-secondary ms-auto">{{ related.count }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="analytics-card">
+                <h5>Search Trends</h5>
+                <canvas id="searchTrendsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script>
+    // Search Trends Chart
+    const ctx = document.getElementById('searchTrendsChart').getContext('2d');
+    const trendsData = {{ search_trends|safe }};
+</script>
+<script src="{% static 'js/search.js' %}">
+</script>
+{% endblock %}
