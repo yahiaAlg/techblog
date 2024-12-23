@@ -5,7 +5,7 @@ PROJECT_NAME="techblog"
 DOMAIN="techblog.example.com"
 USER="yahia"
 SERVER="135.125.106.2"  # Replace with actual IP address
-DEPLOY_PATH="/home/$USER/$PROJECT_NAME"
+DEPLOY_PATH="/home/$USER/pyapps/$PROJECT_NAME"
 
 
 echo "Deploying $PROJECT_NAME to $SERVER..."
