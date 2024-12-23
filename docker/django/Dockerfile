@@ -26,6 +26,7 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libpq-dev \
+    netcat \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/wheels /wheels
@@ -34,5 +35,9 @@ RUN pip install --no-cache /wheels/*
 
 COPY . .
 
-RUN chmod +x docker/django/entrypoint.sh
-ENTRYPOINT ["docker/django/entrypoint.sh"]
+# Set correct permissions
+RUN chmod +x docker/django/entrypoint.sh && \
+    chmod -R 755 /app
+
+ENTRYPOINT ["/app/docker/django/entrypoint.sh"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
