@@ -1,7 +1,6 @@
 from rest_framework.throttling import BaseThrottle
 from django.core.cache import cache
 from django.utils import timezone
-import time
 
 class APIKeyThrottle(BaseThrottle):
     def get_cache_key(self, request, view):
