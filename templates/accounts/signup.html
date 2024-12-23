@@ -88,8 +88,8 @@
                 </div>
                 <div class="terms-text mt-1">
                     By creating an account, you agree to our
-                    <a href="{% url 'terms' %}">Terms of Service</a> and
-                    <a href="{% url 'privacy' %}">Privacy Policy</a>
+                    <a href="#">Terms of Service</a> and
+                    <a href="#">Privacy Policy</a>
                 </div>
             </div>
 
@@ -103,10 +103,10 @@
         </div>
 
         <div class="social-signup mb-4">
-            <a href="{% url 'social:begin' 'github' %}" class="social-btn github">
+            <a href="#" class="social-btn github">
                 <i class="fab fa-github"></i>
             </a>
-            <a href="{% url 'social:begin' 'google-oauth2' %}" class="social-btn google">
+            <a href="#" class="social-btn google">
                 <i class="fab fa-google"></i>
             </a>
         </div>
@@ -120,6 +120,15 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    // Password strength indicator
+    const password1Input = document.getElementById(
+    "{{ form.password1.id_for_label }}"
+    );
+    const password2Input = document.getElementById(
+    "{{ form.password2.id_for_label }}"
+    );
+</script>
 <script src="{% static 'js/signup.js' %}">
 </script>
 {% endblock %}

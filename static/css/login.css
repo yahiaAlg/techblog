@@ -1,0 +1,100 @@
+.login-container {
+  max-width: 450px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--dracula-current-line);
+  border-radius: 10px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header img {
+  width: 80px;
+  margin-bottom: 1rem;
+}
+
+.form-floating {
+  margin-bottom: 1rem;
+}
+
+.form-floating input {
+  background: var(--dracula-background);
+  border-color: var(--dracula-comment);
+  color: var(--dracula-foreground);
+}
+
+.form-floating input:focus {
+  background: var(--dracula-background);
+  border-color: var(--dracula-purple);
+  box-shadow: 0 0 0 0.2rem rgba(189, 147, 244, 0.25);
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.social-login {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.social-divider {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--dracula-comment);
+}
+
+.social-divider span {
+  padding: 0 1rem;
+  color: var(--dracula-comment);
+}
+
+.social-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.social-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dracula-background);
+  color: var(--dracula-foreground);
+  transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+}
+
+.alert {
+  border: none;
+  border-radius: 8px;
+}
+
+.alert-danger {
+  background: var(--dracula-red);
+  color: white;
+}
+
+.form-check-input:checked {
+  background-color: var(--dracula-purple);
+  border-color: var(--dracula-purple);
+}

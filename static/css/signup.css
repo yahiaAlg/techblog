@@ -1,0 +1,89 @@
+.signup-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--dracula-current-line);
+  border-radius: 10px;
+}
+
+.form-floating {
+  margin-bottom: 1rem;
+}
+
+.form-floating label {
+  color: var(--dracula-foreground);
+}
+
+.form-floating input {
+  background: var(--dracula-background);
+  border-color: var(--dracula-comment);
+  color: var(--dracula-foreground);
+}
+
+.form-floating input:focus {
+  background: var(--dracula-background);
+  border-color: var(--dracula-purple);
+  box-shadow: 0 0 0 0.2rem rgba(189, 147, 244, 0.25);
+}
+
+.terms-text {
+  font-size: 0.9rem;
+  color: var(--dracula-comment);
+}
+
+.signup-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--dracula-comment);
+}
+
+.signup-divider::before,
+.signup-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--dracula-comment);
+}
+
+.signup-divider span {
+  padding: 0 1rem;
+}
+
+.social-signup {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.social-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dracula-background);
+  color: var(--dracula-foreground);
+  transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+}
+
+.social-btn.github:hover {
+  background: #24292e;
+  color: white;
+}
+
+.social-btn.google:hover {
+  background: #db4437;
+  color: white;
+}
+
+.error-feedback {
+  color: var(--dracula-red);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}

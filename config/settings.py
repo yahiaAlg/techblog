@@ -131,7 +131,7 @@ STORAGES = {
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static/"
-STATICFILES_DIR = [
+STATICFILES_DIRS = [
     BASE_DIR / "config/static",
 ]
 MEDIA_URL = "media/"

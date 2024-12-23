@@ -1,3 +1,11 @@
+// Password strength indicator
+const password1Input = document.getElementById(
+  "{{ form.password1.id_for_label }}"
+);
+const password2Input = document.getElementById(
+  "{{ form.password2.id_for_label }}"
+);
+
 function updatePasswordStrength(password) {
   let strength = 0;
 
@@ -64,12 +72,3 @@ document.querySelector("form").addEventListener("submit", function (e) {
   }
   this.classList.add("was-validated");
 });
-
-
-/* add a class="form-control" to each input field */
-document.querySelectorAll("input").forEach((input) => { input.classList.add("form-control"); });
-/* add a class="form-check-input" class="form-check-label" to each checkbox and the label next to it */
-document.querySelectorAll("input[type='checkbox']").forEach((checkbox) => { checkbox.classList.add("form-check-input"); });
-
-
-

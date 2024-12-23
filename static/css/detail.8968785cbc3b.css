@@ -1,0 +1,153 @@
+/* Hero Header */
+.article-hero {
+  position: relative;
+  height: 60vh;
+  min-height: 400px;
+  background-size: cover;
+  background-position: center;
+  color: var(--dracula-foreground);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(40, 42, 54, 0.7),
+    rgba(40, 42, 54, 0.9)
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem 0;
+}
+
+/* Reading Progress Bar */
+.progress-container {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  z-index: 1000;
+  background: var(--dracula-current-line);
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--dracula-purple);
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+/* Table of Contents */
+.toc-container {
+  position: sticky;
+  top: 90px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+}
+
+.toc-item {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--dracula-current-line);
+  transition: all 0.3s ease;
+}
+
+.toc-item.active {
+  border-left-color: var(--dracula-purple);
+}
+
+/* Article Content */
+.article-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  margin-top: 2rem;
+  scroll-margin-top: 80px;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin: 1.5rem 0;
+}
+
+.article-content pre {
+  border-radius: 10px;
+  margin: 1.5rem 0;
+}
+
+/* Share Buttons */
+.share-buttons {
+  position: sticky;
+  top: 90px;
+}
+
+.share-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem 0;
+  transition: transform 0.3s ease;
+}
+
+.share-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Author Card */
+.author-card {
+  margin: 2rem 0;
+  padding: 2rem;
+  border-radius: 15px;
+  background: var(--dracula-current-line);
+}
+
+.author-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Comments Section */
+.comment {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--dracula-current-line);
+}
+
+.comment-replies {
+  margin-left: 2rem;
+  border-left: 2px solid var(--dracula-purple);
+  padding-left: 1rem;
+}
+
+/* Related Articles */
+.related-article-card {
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.related-article-card:hover {
+  transform: translateY(-5px);
+}

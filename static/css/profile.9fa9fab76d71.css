@@ -1,0 +1,119 @@
+.profile-header {
+  background: var(--dracula-current-line);
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid var(--dracula-purple);
+  box-shadow: 0 0 20px rgba(189, 147, 244, 0.3);
+  object-fit: cover;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--dracula-purple);
+}
+
+.stat-label {
+  color: var(--dracula-comment);
+}
+
+.nav-tabs {
+  border-bottom: 2px solid var(--dracula-comment);
+  margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-link {
+  color: var(--dracula-comment);
+  border: none;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--dracula-purple);
+  background: none;
+}
+
+.nav-tabs .nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--dracula-purple);
+}
+
+.form-card {
+  background: var(--dracula-current-line);
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.activity-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.activity-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--dracula-comment);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -2rem;
+  top: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--dracula-purple);
+}
+
+.preferences-card {
+  background: var(--dracula-current-line);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.api-key-card {
+  background: var(--dracula-current-line);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.api-key {
+  font-family: monospace;
+  background: var(--dracula-background);
+  padding: 0.5rem;
+  border-radius: 5px;
+}
