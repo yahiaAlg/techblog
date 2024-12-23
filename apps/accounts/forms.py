@@ -45,18 +45,18 @@ class ProfileUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.user:
-            self.fields['first_name'].initial = self.instance.user.first_name
-            self.fields['last_name'].initial = self.instance.user.last_name
-            self.fields['email'].initial = self.instance.user.email
+        if self.instance.owner:
+            self.fields['first_name'].initial = self.instance.owner.first_name
+            self.fields['last_name'].initial = self.instance.owner.last_name
+            self.fields['email'].initial = self.instance.owner.email
 
     def save(self, commit=True):
         profile = super().save(commit=False)
         if commit:
-            user = profile.owner
-            user.first_name = self.cleaned_data['first_name']
-            user.last_name = self.cleaned_data['last_name']
-            user.email = self.cleaned_data['email']
-            user.save()
+            owner = profile.owner
+            owner.first_name = self.cleaned_data['first_name']
+            owner.last_name = self.cleaned_data['last_name']
+            owner.email = self.cleaned_data['email']
+            owner.save()
             profile.save()
         return profile

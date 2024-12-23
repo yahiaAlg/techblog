@@ -81,7 +81,8 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('accounts:profile')
 
     def get_object(self):
-        return self.request.user.profile
+        return self.request.user.profile_owner
+
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -91,8 +92,8 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['login_history'] = self.request.user.loginhistory_set.all()[:5]
-        context['articles'] = self.request.user.article_set.all()[:5]
-        context['comments'] = self.request.user.comment_set.all()[:5]
+        context['articles'] = self.request.user.articles.all()[:5]  # Use 'articles'
+        context['comments'] = self.request.user.comments.all()[:5]  # Use 'comments'
         return context
 
 class PublicProfileView(DetailView):
@@ -118,7 +119,7 @@ class EmailVerificationView(RedirectView):
         
         if verification.is_valid():
             user = verification.user
-            profile = user.profile
+            profile = user.profile_owner
             profile.email_verified = True
             profile.save()
             
@@ -154,6 +155,6 @@ class AccountSettingsView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
-        context['profile'] = self.request.user.profile
+        context['profile'] = self.request.user.profile_owner
         context['login_history'] = self.request.user.loginhistory_set.all()[:10]
         return context

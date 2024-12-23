@@ -79,7 +79,7 @@
             <div class="tab-content">
                 <!-- Overview Tab -->
                 <div class="tab-pane fade show active" id="overview">
-                    <div class="card">
+                    <div class="card mt-3">
                         <div class="card-body">
                             <h3 class="card-title">Recent Activity</h3>
                             <div class="activity-timeline">
@@ -221,7 +221,13 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="js/profile.js">
+<script src="{% static "js/profile.js" %}">
 
+</script>
+<script>
+    // add bootstrap5 classes to form inputs and checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(element) { element.classList.add('form-check-input'); });
+    document.querySelectorAll('input[type="radio"]').forEach(function(element) { element.classList.add('form-check -input'); });
+    document.querySelectorAll('input[type="text"], input[type="password"], input[type="url"], input[type="email"], input[type="file"], textarea').forEach(function(element) { element.classList.add('form-control'); });
 </script>
 {% endblock %}
