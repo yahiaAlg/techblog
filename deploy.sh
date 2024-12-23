@@ -4,8 +4,9 @@
 PROJECT_NAME="techblog"
 DOMAIN="techblog.example.com"
 USER="yahia"
-SERVER="your_server_ip"
+SERVER="135.125.106.2"  # Replace with actual IP address
 DEPLOY_PATH="/home/$USER/$PROJECT_NAME"
+
 
 echo "Deploying $PROJECT_NAME to $SERVER..."
 
