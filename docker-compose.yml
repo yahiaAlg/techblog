@@ -9,6 +9,8 @@ services:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/media
+    expose:
+      - 8000  # Add this line
     env_file:
       - .env
     depends_on:
@@ -16,7 +18,6 @@ services:
       - redis
     networks:
       - techblog_network
-
   db:
     image: postgres:15-alpine
     volumes:
