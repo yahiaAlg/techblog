@@ -53,7 +53,7 @@ class ProfileUpdateForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super().save(commit=False)
         if commit:
-            user = profile.user
+            user = profile.owner
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
             user.email = self.cleaned_data['email']

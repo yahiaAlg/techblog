@@ -14,8 +14,8 @@ from .permissions import (
     IsArticleAuthorOrReadOnly, IsProfileOwnerOrReadOnly
 )
 from .throttling import APIKeyThrottle
-from blog.models import Article, Category, Comment
-from accounts.models import Profile
+from apps.blog.models import Article, Category, Comment
+from apps.accounts.models import Profile
 import time
 
 class BaseModelViewSet(viewsets.ModelViewSet):

@@ -192,9 +192,8 @@ class Comment(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(
-        User, verbose_name=_("User"), on_delete=models.CASCADE, related_name="profile"
-    )
+    user = models.OneToOneField(User, verbose_name=_("User"), on_delete=models.CASCADE, related_name='user_profile')
+
     bio = models.TextField(_("Bio"), blank=True)
     avatar = models.ImageField(_("Avatar"), upload_to="avatars/", blank=True)
     location = models.CharField(_("Location"), max_length=100, blank=True)

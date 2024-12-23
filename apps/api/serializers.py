@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from accounts.models import Profile
+from apps.accounts.models import Profile
 from apps.api.models import APIKey
-from blog.models import Article, Category, Comment
+from apps.blog.models import Article, Category, Comment
 from taggit.serializers import TagListSerializerField
 
 class UserSerializer(serializers.ModelSerializer):
