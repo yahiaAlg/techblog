@@ -36,21 +36,21 @@ services:
       - techblog_network
 
   nginx:
-    build:
-      context: .
-      dockerfile: docker/nginx/Dockerfile
-    volumes:
-      - static_volume:/app/static
-      - media_volume:/app/media
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./docker/nginx/certs:/etc/nginx/certs
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - web
-    networks:
-      - techblog_network
+      build:
+        context: .
+        dockerfile: docker/nginx/Dockerfile
+      volumes:
+        - static_volume:/app/static
+        - media_volume:/app/media
+        - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        - ./docker/nginx/certs:/etc/nginx/certs
+      ports:
+        - "8080:80"  # Changed from 80:80
+        - "8443:443" # Changed from 443:443
+      depends_on:
+        - web
+      networks:
+        - techblog_network
 
 networks:
   techblog_network:
