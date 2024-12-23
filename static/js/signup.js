@@ -1,11 +1,3 @@
-// Password strength indicator
-const password1Input = document.getElementById(
-  "{{ form.password1.id_for_label }}"
-);
-const password2Input = document.getElementById(
-  "{{ form.password2.id_for_label }}"
-);
-
 function updatePasswordStrength(password) {
   let strength = 0;
 
